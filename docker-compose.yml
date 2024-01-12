@@ -18,7 +18,7 @@ networks:
 services:
   es01_setup:
     build:
-      context: ./es-config
+      context: ./setup/es-config
       dockerfile: dockerfile
       args:
         es_version: ${DSTACK_VERSION}
