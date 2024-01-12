@@ -4,24 +4,6 @@ Logstash plugins that are written in Java are built using gradle. For more infor
 
 For more information on writing custom Logstash plugins in Java, see: https://www.elastic.co/guide/en/logstash/7.4/java-filter-plugin.html
 
-To build the usage_type plugin
- - checkout the `logstash` submodule
- - build `logstash`:
-```bash
-$ cd logstash
-$ ./gradlew jar
-```
- - then build this project
-```bash
-$ cd ..
-$ ./gradlew assemble
-```
-
-To build a gem that can be installed into logstash, execute:
-```bash
-$ ./gradlew gem
-```
-
 
 ## Usage types
 
