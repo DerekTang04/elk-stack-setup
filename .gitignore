@@ -2,3 +2,4 @@ certs/
 filebeat_ingest_data/
 
 .env
+ips_with_usage_types.csv
