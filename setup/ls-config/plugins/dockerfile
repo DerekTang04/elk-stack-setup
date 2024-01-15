@@ -1,3 +1,7 @@
+# image to set env necessary to build custom plugins
+# plugins:
+#     usagetype
+
 FROM ubuntu:22.04
 
 ARG arg_working_dir
