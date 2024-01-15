@@ -96,12 +96,18 @@ services:
     depends_on:
       es01_setup:
         condition: service_completed_successfully 
-    image: docker.elastic.co/logstash/logstash:${DSTACK_VERSION}
+    build:
+      context: ./setup/ls-config
+      dockerfile: dockerfile
+      args:
+        ls_version: ${DSTACK_VERSION}
     user: root
     volumes:
       - logstashdata01:/usr/share/logstash/data
       - "./logstash.yml:/usr/share/logstash/config/logstash.yml"
       - "./logstash-pipeline.conf:/usr/share/logstash/pipeline/logstash.conf"
+      - "./setup/ls-config/patterns:/usr/share/logstash/pipeline/patterns"
+      - "./setup/ls-config/ips_with_usage_types.csv:/ips.csv"
     environment:
       - ELASTICSEARCH_HOSTS=http://${DELASTICSEARCH_HOSTS}
       - LOGSTASH_PASSWORD=${DLOGSTASH_PASSWORD}
