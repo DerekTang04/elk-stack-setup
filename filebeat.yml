@@ -6,4 +6,6 @@ filebeat.inputs:
 
 output.logstash:
   hosts: "${LOGSTASH_HOSTS}"
+
+close.reader.on_eof: true
   
