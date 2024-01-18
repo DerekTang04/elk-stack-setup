@@ -61,7 +61,7 @@ services:
       - "./certs/es01:/usr/share/elasticsearch/config/certs/es01"
     environment:
       - ELASTIC_PASSWORD=${DELASTIC_PASSWORD}
-    mem_limit: 1073741824
+    mem_limit: 4g
     ulimits:
       memlock:
         soft: -1
@@ -81,7 +81,7 @@ services:
     volumes:
       - kibanadata:/usr/share/kibana/data
       - "./kibana.yml:/usr/share/kibana/config/kibana.yml"
-      - "./certs/kibana:/usr/share/kibana/config/certs/kibana"
+      - "./certs/kibana:/usr/share/kibana/config/certs/kibana"  
     environment:
       - ELASTICSEARCH_HOSTS=http://${DELASTICSEARCH_HOSTS}
       - KIBANA_PASSWORD=${DKIBANA_PASSWORD}
@@ -90,7 +90,8 @@ services:
       - REPORT_ENC_KEY=${DREPORT_ENC_KEY}
     ports:
       - ${DKIBANA_PORT}:5601
-    mem_limit: 1073741824
+      - 443:5601
+    mem_limit: 2g
 
   logstash01:
     depends_on:
@@ -111,6 +112,7 @@ services:
     environment:
       - ELASTICSEARCH_HOSTS=http://${DELASTICSEARCH_HOSTS}
       - LOGSTASH_PASSWORD=${DLOGSTASH_PASSWORD}
+    mem_limit: 2g
 
   filebeat01:
     depends_on:
