@@ -2,7 +2,8 @@ filebeat.inputs:
 - type: filestream
   id: default-filestream
   paths:
-    - ingest_data/*.log
+    - ingest_data/*extended_log*
+    - ingest_data/reactomews/*.txt   
 
 output.logstash:
   hosts: "${LOGSTASH_HOSTS}"
