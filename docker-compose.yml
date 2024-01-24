@@ -82,10 +82,11 @@ services:
       es01_setup:
         condition: service_completed_successfully      
     image: docker.elastic.co/kibana/kibana:${DSTACK_VERSION}
+    user: root:root
     volumes:
       - kibanadata:/usr/share/kibana/data
       - "./kibana.yml:/usr/share/kibana/config/kibana.yml"
-      - "./certs/kibana:/usr/share/kibana/config/certs/kibana"  
+      - "/etc/letsencrypt:/etc/letsencrypt"  
     environment:
       - ELASTICSEARCH_HOSTS=http://${DELASTICSEARCH_HOSTS}
       - KIBANA_PASSWORD=${DKIBANA_PASSWORD}
@@ -96,6 +97,7 @@ services:
       - ${DKIBANA_PORT}:5601
       - 443:5601
     mem_limit: 2g
+    command: [ "/usr/local/bin/kibana-docker", "--allow-root" ]
 
   logstash01:
     depends_on:
@@ -123,11 +125,11 @@ services:
       es01:
         condition: service_healthy
     image: docker.elastic.co/beats/filebeat:${DSTACK_VERSION}
-    user: root
+    user: root:root
     volumes:
       - filebeatdata01:/usr/share/filebeat/data
-      - "./filebeat_ingest_data/:/usr/share/filebeat/ingest_data/"
+      - "/efs/filebeat_ingest_data/:/usr/share/filebeat/ingest_data/"
       - "./filebeat.yml:/usr/share/filebeat/filebeat.yml"
     environment:
       - LOGSTASH_HOSTS=${DLOGSTASH_HOSTS}
-    command: ["filebeat", "--strict.perms=false"]
+    command: [ "filebeat", "--strict.perms=false" ]

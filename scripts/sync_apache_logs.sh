@@ -22,7 +22,7 @@ echo "Processing for year: $current_year"
 echo ""
 
 # where filebeat reads logs from
-elk_log_path="/opt/gitroot/elk-setup-v2/filebeat_ingest_data"
+elk_log_path="/efs/filebeat_ingest_data/"
 echo "Elk log path: $elk_log_path"
 
 

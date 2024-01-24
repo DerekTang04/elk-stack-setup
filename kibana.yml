@@ -2,8 +2,8 @@ server.name: kibana
 server.host: 0.0.0.0
 
 server.ssl.enabled: true
-server.ssl.certificate: config/certs/kibana/kibana.crt
-server.ssl.key: config/certs/kibana/kibana.key
+server.ssl.certificate: /etc/letsencrypt/live/sunshine.reactome.org/fullchain.pem
+server.ssl.key: /etc/letsencrypt/live/sunshine.reactome.org/privkey.pem
 
 elasticsearch.hosts: ${ELASTICSEARCH_HOSTS}
 elasticsearch.username: kibana_system
