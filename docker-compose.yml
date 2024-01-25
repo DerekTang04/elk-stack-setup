@@ -108,7 +108,7 @@ services:
       dockerfile: dockerfile
       args:
         ls_version: ${DSTACK_VERSION}
-    user: root
+    user: root:root
     volumes:
       - logstashdata01:/usr/share/logstash/data
       - "./logstash.yml:/usr/share/logstash/config/logstash.yml"
@@ -124,11 +124,16 @@ services:
     depends_on:
       es01:
         condition: service_healthy
-    image: docker.elastic.co/beats/filebeat:${DSTACK_VERSION}
+    build:
+      context: ./setup/fb-config
+      dockerfile: dockerfile
+      args:
+        fb_version: ${DSTACK_VERSION}
     user: root:root
     volumes:
       - filebeatdata01:/usr/share/filebeat/data
       - "/efs/filebeat_ingest_data/:/usr/share/filebeat/ingest_data/"
+      - "./scripts/clear-logs.bash:/etc/cron.daily/clear-logs.bash"
       - "./filebeat.yml:/usr/share/filebeat/filebeat.yml"
     environment:
       - LOGSTASH_HOSTS=${DLOGSTASH_HOSTS}

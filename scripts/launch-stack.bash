@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# USAGE
+#
+# builds logstash usage_type plugin if necessary
+#
+# launches elk stack once .gem and .gemspec files are avail
+
 # exit on attempt to use undeclared variable
 set -o nounset
 # enable error tracing
@@ -14,12 +20,6 @@ if [[ ! -e "$PLUGIN_DIR"/usagetype-plugin/logstash-filter-usage_type-0.0.1.gem ]
     echo "building plugins..."
     "$PLUGIN_DIR"/build-plugin.bash
 fi
-
-#echo "copying certs..."
-#KIB_CERTS_DIR="$ROOT_DIR"/certs/kibana
-#cp /etc/letsencrypt/live/sunshine.reactome.org/fullchain.pem "$KIB_CERTS_DIR"/kibana.crt
-#cp /etc/letsencrypt/live/sunshine.reactome.org/privkey.pem "$KIB_CERTS_DIR"/kibana.key
-#chmod g+r "$KIB_CERTS_DIR"/kibana.key
 
 echo "waiting for plugins..."
 while [[ ! -e "$PLUGIN_DIR"/usagetype-plugin/logstash-filter-usage_type-0.0.1.gem ]] || [[ ! -e "$PLUGIN_DIR"/usagetype-plugin/logstash-filter-usage_type.gemspec ]]; do

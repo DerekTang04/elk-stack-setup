@@ -10,9 +10,7 @@ ENV working_dir="${arg_working_dir}"
 
 USER root
 
-RUN apt-get update
-
-RUN apt-get -y install openjdk-11-jre-headless
+RUN apt-get update && apt-get -y install openjdk-11-jre-headless
 
 WORKDIR "${working_dir}"
 
