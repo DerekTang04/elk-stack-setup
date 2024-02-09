@@ -22,7 +22,7 @@ echo "Processing for year: $current_year"
 echo ""
 
 # where filebeat reads logs from
-elk_log_path="/efs/filebeat_ingest_data/"
+elk_log_path="/var/elk-stack/filebeat_ingest_data/"
 echo "Elk log path: $elk_log_path"
 
 
@@ -33,7 +33,7 @@ process_logs() {
     echo "Processesing logs for: $domain"
     
     # where logs are pulled to, munged, and tracked
-    logs_path="/efs/logs/$domain/"
+    logs_path="/var/elk-stack/logs/$domain/"
     echo "Logs path: $logs_path"
 
     if [ $domain = 'reactome.org' ]

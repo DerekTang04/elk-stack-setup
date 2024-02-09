@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# exit on attempt to use undeclared variable
+set -o nounset
+# enable error tracing
+set -o errtrace
+
+WORKING_DIR=/usr/share/filebeat
+
+REGISTRY_DIR="$WORKING_DIR"/data/registry/filebeat
+
+while IFS= read -r DATA_FILE; do
+    # get log file size in bytes
+    BYTES="$(wc -c ${DATA_FILE} | awk '{print $1}')"
+    # get filebeat cursor offset in bytes
+    OFFSET="$(grep ${DATA_FILE} ${REGISTRY_DIR}/log.json | tail -1 | jq '.v.cursor.offset')"
+
+    if [[ "$BYTES" -eq "$OFFSET" ]]; then
+        rm -f "$DATA_FILE"
+    fi
+done < <(find "$WORKING_DIR"/ingest_data -type f)

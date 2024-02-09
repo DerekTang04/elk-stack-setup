@@ -3,10 +3,6 @@ version: "3.8"
 volumes:
   esdata01:
     driver: local
-    driver_opts:
-      type: nfs
-      o: addr=fs-028b5967c71f2cbd0.efs.us-east-1.amazonaws.com,rw,nfsvers=4.1,rsize=1048576,wsize=1048576,hard,timeo=600,retrans=2,noresvport
-      device: ":/es-data"
   kibanadata:
     driver: local
   logstashdata01:
@@ -58,6 +54,7 @@ services:
 
   es01:
     image: docker.elastic.co/elasticsearch/elasticsearch:${DSTACK_VERSION}
+    user: elasticsearch:1005
     volumes:
       - esdata01:/usr/share/elasticsearch/data
       - "./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
@@ -82,11 +79,11 @@ services:
       es01_setup:
         condition: service_completed_successfully      
     image: docker.elastic.co/kibana/kibana:${DSTACK_VERSION}
-    user: root:root
+    user: root:1005
     volumes:
       - kibanadata:/usr/share/kibana/data
-      - "./kibana.yml:/usr/share/kibana/config/kibana.yml"
       - "/etc/letsencrypt:/etc/letsencrypt"  
+      - "./kibana.yml:/usr/share/kibana/config/kibana.yml"
     environment:
       - ELASTICSEARCH_HOSTS=http://${DELASTICSEARCH_HOSTS}
       - KIBANA_PASSWORD=${DKIBANA_PASSWORD}
@@ -108,7 +105,7 @@ services:
       dockerfile: dockerfile
       args:
         ls_version: ${DSTACK_VERSION}
-    user: root:root
+    user: root:1005
     volumes:
       - logstashdata01:/usr/share/logstash/data
       - "./logstash.yml:/usr/share/logstash/config/logstash.yml"
@@ -129,12 +126,13 @@ services:
       dockerfile: dockerfile
       args:
         fb_version: ${DSTACK_VERSION}
-    user: root:root
+    user: root:1005
     volumes:
       - filebeatdata01:/usr/share/filebeat/data
-      - "/efs/filebeat_ingest_data/:/usr/share/filebeat/ingest_data/"
-      - "./scripts/clear-logs.bash:/etc/cron.daily/clear-logs.bash"
+      - "/var/elk-stack/filebeat_ingest_data/:/usr/share/filebeat/ingest_data/"
+      - "./scripts/start_filebeat:/usr/share/filebeat/start_filebeat"
+      - "./scripts/clear_logs:/etc/cron.daily/clear_logs"
       - "./filebeat.yml:/usr/share/filebeat/filebeat.yml"
     environment:
       - LOGSTASH_HOSTS=${DLOGSTASH_HOSTS}
-    command: [ "filebeat", "--strict.perms=false" ]
+    command: [ "start_filebeat" ]

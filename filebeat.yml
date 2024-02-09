@@ -3,10 +3,9 @@ filebeat.inputs:
   id: default-filestream
   paths:
     - ingest_data/*extended_log*
-    - ingest_data/reactomews/*.txt   
+    - ingest_data/reactomews/*.txt
+  close.reader.on_eof: true
+  clean_removed: true
 
 output.logstash:
   hosts: "${LOGSTASH_HOSTS}"
-
-close.reader.on_eof: true
-  

@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# USAGE
+# 
+# bind mounted into /usr/share/filebeat on the filebeat container
+#
+# used to start the filebeat container
+#
+# starts cron service, then starts filebeat
+
+# exit on attempt to use undeclared variable
+set -o nounset
+# enable error tracing
+set -o errtrace
+
+WORKING_DIR="/usr/share/filebeat"
+
+service cron start
+
+"$WORKING_DIR"/filebeat --strict.perms=false
