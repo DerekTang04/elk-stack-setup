@@ -62,6 +62,8 @@ services:
       - "./certs/es01:/usr/share/elasticsearch/config/certs/es01"
     environment:
       - ELASTIC_PASSWORD=${DELASTIC_PASSWORD}
+    ports:
+      - ${DELASTIC_PORT}:9200
     mem_limit: 4g
     ulimits:
       memlock:

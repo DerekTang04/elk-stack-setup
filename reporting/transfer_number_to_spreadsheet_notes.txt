@@ -1,0 +1,7 @@
+
+Add to EBI-EMBL stats spreadsheet
+https://docs.google.com/spreadsheets/d/13uVi-mAlR0iWY3gStvC6KsiV4LA5vP2P7zdxY3hM2Yg/edit
+
+For web requests change "unknown" to "-"
+
+For HTTP CODES use without bots for the 200,300,400,500 counts and the total from these for count_requests column. From bots files take total and use for column robot_count
