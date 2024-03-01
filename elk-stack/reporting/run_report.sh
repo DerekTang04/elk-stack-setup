@@ -26,7 +26,7 @@ MAIL_TO=$7
 
 set -e
 
-SCRIPT_DIR=/opt/gitroot/elk-setup-v2/reporting
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # The query file should have placeholder so that we can specify the date range.
 QUERY=$(sed -e "s/_FROM_DATE/\""$FROM_DATE"\"/g" <  "$SCRIPT_DIR"/query-files/"$QUERY_FILE" | sed -e "s/_TO_DATE/\""$TO_DATE"\"/g")

@@ -9,4 +9,3 @@ FROM docker.elastic.co/elasticsearch/elasticsearch:${es_version}
 USER root
 
 RUN apt-get update && apt-get -y install jq gettext-base
-

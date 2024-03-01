@@ -17,9 +17,10 @@ networks:
 
 services:
   es01_setup:
+    image: reactome-es-setup:latest
     build:
       context: ./setup/es-config
-      dockerfile: dockerfile
+      dockerfile: config.dockerfile
       args:
         es_version: ${DSTACK_VERSION}
     volumes:
@@ -53,8 +54,14 @@ services:
       '
 
   es01:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${DSTACK_VERSION}
-    user: elasticsearch:1005
+    image: reactome-elasticsearch:latest
+    build:
+      context: ./setup/es-config
+      dockerfile: es.dockerfile
+      args:
+        es_version: ${DSTACK_VERSION}
+        gid: ${DGID}
+    user: elasticsearch:reactome
     volumes:
       - esdata01:/usr/share/elasticsearch/data
       - "./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
@@ -80,8 +87,14 @@ services:
     depends_on:
       es01_setup:
         condition: service_completed_successfully      
-    image: docker.elastic.co/kibana/kibana:${DSTACK_VERSION}
-    user: root:1005
+    image: reactome-kibana:latest
+    build:
+      context: ./setup/kib-config
+      dockerfile: dockerfile
+      args:
+        kib_version: ${DSTACK_VERSION}
+        gid: ${DGID}
+    user: root:reactome
     volumes:
       - kibanadata:/usr/share/kibana/data
       - "/etc/letsencrypt:/etc/letsencrypt"  
@@ -102,12 +115,14 @@ services:
     depends_on:
       es01_setup:
         condition: service_completed_successfully 
+    image: reactome-logstash:latest
     build:
       context: ./setup/ls-config
       dockerfile: dockerfile
       args:
-        ls_version: ${DSTACK_VERSION}
-    user: root:1005
+        kib_version: ${DSTACK_VERSION}
+        gid: ${DGID}
+    user: root:reactome
     volumes:
       - logstashdata01:/usr/share/logstash/data
       - "./logstash.yml:/usr/share/logstash/config/logstash.yml"
@@ -123,12 +138,14 @@ services:
     depends_on:
       es01:
         condition: service_healthy
+    image: reactome-filebeat:latest
     build:
       context: ./setup/fb-config
       dockerfile: dockerfile
       args:
         fb_version: ${DSTACK_VERSION}
-    user: root:1005
+        gid: ${DGID}
+    user: root:reactome
     volumes:
       - filebeatdata01:/usr/share/filebeat/data
       - "/var/elk-stack/filebeat_ingest_data/:/usr/share/filebeat/ingest_data/"

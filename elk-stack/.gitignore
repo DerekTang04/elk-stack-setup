@@ -1,0 +1,8 @@
+certs/
+
+.env
+.netrc
+
+setup/kib-config/*.ndjson
+setup/ls-config/ips_with_usage_types.csv
+reporting/reports/*.csv

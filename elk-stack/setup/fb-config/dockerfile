@@ -1,8 +1,9 @@
 ARG fb_version
 
-FROM docker.elastic.co/beats/filebeat:8.11.3
+FROM docker.elastic.co/beats/filebeat:${fb_version}
 
-USER root
+ARG gid
 
-RUN apt-get update && apt-get -y install jq cron 
+RUN groupadd -g ${gid} reactome
 
+RUN apt-get update && apt-get -y install jq cron
