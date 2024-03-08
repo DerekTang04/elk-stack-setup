@@ -1,3 +1,5 @@
 .venv/
 .vscode/
 credentials/secrets
+
+ansible/host_vars/localhost.yml
