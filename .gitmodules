@@ -1,0 +1,3 @@
+[submodule "elk-stack/setup/ls-config/usagetype-plugin/logstash-7.4.0"]
+	path = elk-stack/setup/ls-config/usagetype-plugin/logstash-7.4.0
+	url = https://github.com/elastic/logstash.git
