@@ -49,9 +49,15 @@
         var: eip
 
 
-# - name: Copy ELK stack to server
+# - name: Setup ELK server
 #   hosts: elk.reactome.org
 #   tasks:
+#     - name: Wait for setup to finish
+#       ansible.builtin.wait_for:
+#         path: /var/log/cloud-init-output.log
+#         search_regex: 'Cloud-init .* finished'
+#         # delay: 350
+
 #     - name: Copy file
 #       ansible.builtin.copy:
 #         src: /path/to/local/file.txt

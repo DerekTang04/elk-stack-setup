@@ -1,0 +1,5 @@
+.dockerignore
+.gitignore
+README.md
+sample_usage_type_file.csv
+VERSION

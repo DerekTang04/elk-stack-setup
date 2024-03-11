@@ -1,31 +1,32 @@
 #!/usr/bin/env bash
-sudo apt-get update && apt-get install -y ca-certificates curl unzip
 
-sudo install -m 0755 -d /etc/apt/keyrings
-sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
-sudo chmod a+r /etc/apt/keyrings/docker.asc
+yes '' | head -n 2 && echo "get update and install tools"
+apt-get update && apt-get install -y ca-certificates curl unzip
+
+yes '' | head -n 2 && echo "install docker"
+install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
+chmod a+r /etc/apt/keyrings/docker.asc
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-    sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-sudo apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+    tee /etc/apt/sources.list.d/docker.list > /dev/null
+apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 
+yes '' | head -n 2 && echo "install aws cli"
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
+unzip awscliv2.zip > /dev/null
+./aws/install
 rm -rf aws*
 
-sudo snap install --classic certbot
-sudo ln -s /snap/bin/certbot /usr/bin/certbot
+yes '' | head -n 2 && echo "install certbot"
+snap install --classic certbot
+ln -s /snap/bin/certbot /usr/bin/certbot
 
-sudo groupadd -g ${gid} reactome
-sudo usermod -aG reactome ubuntu
+yes '' | head -n 2 && echo "make reactome group"
+groupadd -g ${REACTOME_GID} reactome
+usermod -aG reactome ubuntu
 
-sudo mkdir /var/elk-stack
-sudo chown ubuntu:reactome /var/elk-stack
-sudo chmod 2775 /var/elk-stack
-cd /var/elk-stack
-mkdir elasticsearch/esdata01 \
-    kibana/kibdata01 \
-    logstash/lsdata01 \
-    filebeat/fbdata01 \
-    filebeat/ingest
+yes '' | head -n 2 && echo "make /var/elk-stack folders"
+mkdir /var/elk-stack
+chown ubuntu:reactome /var/elk-stack
+chmod 2775 /var/elk-stack
     

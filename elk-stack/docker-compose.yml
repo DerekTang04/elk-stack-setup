@@ -93,7 +93,7 @@ services:
     volumes:
       - esdata01:/usr/share/elasticsearch/data
       - "./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml"
-      - "./setup/es-config/certs/secrets:/usr/share/elasticsearch/config/keystore"
+      - "./setup/es-config/certs/keystore:/usr/share/elasticsearch/config/keystore"
     environment:
       - ELASTIC_PASSWORD=${DELASTIC_PASSWORD}
     ports:
