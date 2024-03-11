@@ -4,8 +4,8 @@
 
 FROM eclipse-temurin:11-jdk-jammy
 
-COPY ./usagetype-plugin /opt/usagetype-plugin
+COPY . /opt/usagetype-plugin
 
 WORKDIR /opt/usagetype-plugin
 
-ENTRYPOINT [ "./build.bash" ]
+ENTRYPOINT [ "/bin/bash" ]

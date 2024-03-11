@@ -1,8 +1,9 @@
 .env
-.netrc
+reporting/.netrc
 
 setup/es-config/certs/keystore/
 setup/kib-config/*.ndjson
 setup/ls-config/ips_with_usage_types.csv
+setup/ls-config/usagetype-artifacts/
 
 reporting/reports/*.csv
