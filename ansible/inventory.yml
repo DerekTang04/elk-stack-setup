@@ -1,9 +1,7 @@
 ungrouped:
   hosts:
     localhost:
-
-elk_servers:
-  hosts:
+    
     elk.reactome.org:
       ansible_connection: ssh
       ansible_user: ubuntu

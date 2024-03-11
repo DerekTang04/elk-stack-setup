@@ -47,3 +47,12 @@
     - name: EIP response
       ansible.builtin.debug:
         var: eip
+
+
+# - name: Copy ELK stack to server
+#   hosts: elk.reactome.org
+#   tasks:
+#     - name: Copy file
+#       ansible.builtin.copy:
+#         src: /path/to/local/file.txt
+#         dest: /opt/file.txt

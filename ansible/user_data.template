@@ -15,3 +15,17 @@ rm -rf aws*
 
 sudo snap install --classic certbot
 sudo ln -s /snap/bin/certbot /usr/bin/certbot
+
+sudo groupadd -g ${gid} reactome
+sudo usermod -aG reactome ubuntu
+
+sudo mkdir /var/elk-stack
+sudo chown ubuntu:reactome /var/elk-stack
+sudo chmod 2775 /var/elk-stack
+cd /var/elk-stack
+mkdir elasticsearch/esdata01 \
+    kibana/kibdata01 \
+    logstash/lsdata01 \
+    filebeat/fbdata01 \
+    filebeat/ingest
+    

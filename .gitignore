@@ -2,4 +2,5 @@
 .vscode/
 credentials/secrets
 
+ansible/user_data.sh
 ansible/host_vars/localhost.yml
