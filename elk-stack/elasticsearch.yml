@@ -3,6 +3,7 @@ network.host: 0.0.0.0
 cluster.name: cluster01
 discovery.type: single-node
 bootstrap.memory_lock: true
+search.max_buckets: 150000
 
 xpack.security.enabled: true
 xpack.security.enrollment.enabled: false
