@@ -22,13 +22,14 @@ find "$WORKING_DIR"/ingest_data -type f | while IFS= read -r DATA_FILE; do
     # if log is missing offset, try to find from snapshot
     if [[ "$OFFSET" -eq 0 && -f "${REGISTRY_DIR}/active.dat" ]]; then
         SNAPSHOT="$(cat ${REGISTRY_DIR}/active.dat)"
-
         ENTRY=$(grep ${DATA_FILE} ${SNAPSHOT})
-        if [[ "${ENTRY: -1}" == "," ]]; then
-            ENTRY="${ENTRY::-1}"
+        
+        if [[ $? -eq 0 ]]; then
+            if [[ "${ENTRY: -1}" == "," ]]; then
+                ENTRY="${ENTRY::-1}"
+            fi
+            OFFSET=$(echo ${ENTRY} | jq .cursor.offset)
         fi
-
-        OFFSET=$(echo ${ENTRY} | jq .cursor.offset)
     fi
 
     # remove file if file size equals read offset
