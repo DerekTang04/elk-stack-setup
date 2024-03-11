@@ -23,3 +23,8 @@ For more information on writing custom Logstash plugins in Java, see: https://ww
 | RSV |Reserved |
 
 (From https://blog.ip2location.com/knowledge-base/what-is-usage-type/ )
+
+
+## Building this plugin
+
+The building of this plugin has been dockerized. The `run_docker.bash` script uses docker to create usagetype artifacts before placing them in `../elk-stack/setup/ls-config/usagetype-artifacts`.
