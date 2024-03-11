@@ -8,4 +8,4 @@ COPY . /opt/usagetype-plugin
 
 WORKDIR /opt/usagetype-plugin
 
-ENTRYPOINT [ "/bin/bash" ]
+ENTRYPOINT [ "./build.bash" ]
