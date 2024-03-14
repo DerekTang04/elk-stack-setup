@@ -25,8 +25,8 @@ yes '' | head -n 2 && echo "make reactome group"
 groupadd -g ${REACTOME_GID} reactome
 usermod -aG reactome ubuntu
 
-yes '' | head -n 2 && echo "make /var/elk-stack folders"
-mkdir /var/elk-stack
-chown ubuntu:reactome /var/elk-stack
-chmod 2775 /var/elk-stack
+yes '' | head -n 2 && echo "make elk-stack folders"
+mkdir /var/elk-stack-data /opt/elk-stack
+chown ubuntu:reactome /var/elk-stack-data /opt/elk-stack
+chmod 2775 /var/elk-stack-data /opt/elk-stack
     

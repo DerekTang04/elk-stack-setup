@@ -5,4 +5,4 @@ credentials/secrets
 ansible/user_data.sh
 ansible/host_vars/localhost.yml
 
-elk-stack.tar
+elk-stack.tar.gz

@@ -1,8 +1,10 @@
 ungrouped:
   hosts:
     localhost:
+      ansible_python_interpreter: ../.venv/bin/python3 # TODO: remove
     
     elk.reactome.org:
       ansible_connection: ssh
       ansible_user: ubuntu
       ansible_ssh_private_key_file: ../credentials/secrets/ec2_rsa
+      ansible_ssh_common_args: "-o StrictHostKeyChecking=no"

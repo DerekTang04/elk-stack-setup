@@ -7,6 +7,7 @@
       aws_access_key: '{{ aws_access_key }}'
       aws_secret_key: '{{ aws_secret_key }}'
       region: us-east-1
+  tags: launch
   tasks:
     - name: Read user data
       ansible.builtin.set_fact:
@@ -49,16 +50,38 @@
         var: eip
 
 
-# - name: Setup ELK server
-#   hosts: elk.reactome.org
-#   tasks:
-#     - name: Wait for setup to finish
-#       ansible.builtin.wait_for:
-#         path: /var/log/cloud-init-output.log
-#         search_regex: 'Cloud-init .* finished'
-#         # delay: 350
+- name: Setup ELK server
+  hosts: elk.reactome.org
+  gather_facts: false
+  tags: setup
+  tasks:
+    - name: Wait for setup to finish
+      ansible.builtin.wait_for:
+        path: /var/log/cloud-init-output.log
+        search_regex: 'Cloud-init .* finished'
+        sleep: 5
+        timeout: 600
 
-#     - name: Copy file
-#       ansible.builtin.copy:
-#         src: /path/to/local/file.txt
-#         dest: /opt/file.txt
+    - name: Creates directories
+      ansible.builtin.file:
+        path: /var/elk-stack-data/{{ item }}
+        state: directory
+        mode: '2775'
+      loop:
+        - filebeat/fbdata01
+        - filebeat/ingest/main
+        - filebeat/ingest/idg
+        - filebeat/ingest/reactomews
+        - filebeat/ingest/tmp
+
+    - name: Move ELK files
+      ansible.builtin.unarchive:
+        src: ../elk-stack.tar.gz
+        dest: /opt/elk-stack
+        creates: docker-compose.yml
+
+    # - name: Start Certbot
+
+    # - name: Add upkeep job to cron (builtin module)
+
+    # - name: Launch stack
