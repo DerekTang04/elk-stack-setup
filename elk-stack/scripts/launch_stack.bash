@@ -1,30 +1,37 @@
 #!/usr/bin/env bash
 
-# USAGE
-#
-# builds logstash usage_type plugin if necessary
-#
-# launches elk stack once .gem and .gemspec files are avail
-
+# exit on error
+set -e
 # exit on attempt to use undeclared variable
 set -o nounset
 # enable error tracing
 set -o errtrace
+
 # define path to this bash script
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+# define elk root
+ELK_ROOT="$SCRIPT_DIR"/..
 
-ROOT_DIR="$SCRIPT_DIR"/..
-
-PLUGIN_DIR="$ROOT_DIR"/setup/ls-config/plugins
-if [[ ! -e "$PLUGIN_DIR"/usagetype-plugin/logstash-filter-usage_type-0.0.1.gem ]] || [[ ! -e "$PLUGIN_DIR"/usagetype-plugin/logstash-filter-usage_type.gemspec ]]; then
-    echo "building plugins..."
-    "$PLUGIN_DIR"/build-plugin.bash
+if [[ ! -f "$ELK_ROOT"/.env ]]; then
+    echo "[ERROR] .env is missing!"
+    exit 1
 fi
 
-echo "waiting for plugins..."
-while [[ ! -e "$PLUGIN_DIR"/usagetype-plugin/logstash-filter-usage_type-0.0.1.gem ]] || [[ ! -e "$PLUGIN_DIR"/usagetype-plugin/logstash-filter-usage_type.gemspec ]]; do
-    sleep 5
-done
+if [[ ! -f "$ELK_ROOT"/reporting/.netrc ]]; then
+    echo "[WARN] reporting/.netrc is missing!"
+fi
 
-echo "launching stack!"
-cd "$ROOT_DIR" && docker compose up -d --build
+if [[ ! -f "$ELK_ROOT"/setup/ls-config/ips_with_usage_types.csv ]]; then
+    echo "[WARN] setup/ls-config/ips_with_usage_types.csv is missing!"
+fi
+
+if [[ ! -f "$ELK_ROOT"/setup/ls-config/usagetype-artifacts/logstash-filter-usage_type-*.gem ]]; then
+    echo "[WARN] filter_usage_type gem file is missing in setup/ls-config/usagetype-artifacts!"
+fi
+
+if [[ ! -f "$ELK_ROOT"/setup/ls-config/usagetype-artifacts/logstash-filter-usage_type.gemspec ]]; then
+    echo "[WARN] filter_usage_type gem spec file is missing in setup/ls-config/usagetype-artifacts!"
+fi
+
+echo "launching stack..."; echo
+cd "$ELK_ROOT" && docker compose up -d --build
