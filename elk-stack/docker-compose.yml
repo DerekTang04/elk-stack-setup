@@ -7,8 +7,6 @@ volumes:
     driver: local
   logstashdata01:
     driver: local
-  filebeatdata01:
-    driver: local
 
 networks:
   default:
@@ -97,7 +95,7 @@ services:
     environment:
       - ELASTIC_PASSWORD=${DELASTIC_PASSWORD}
     ports:
-      - ${DELASTIC_PORT}:9200
+      - 9200:9200
     mem_limit: 4g
     ulimits:
       memlock:
@@ -127,7 +125,7 @@ services:
       - SAVED_OBJ_ENC_KEY=${DSAVED_OBJ_ENC_KEY}
       - REPORT_ENC_KEY=${DREPORT_ENC_KEY}
     ports:
-      - ${DKIBANA_PORT}:5601
+      - 5601:5601
       - 443:5601
     mem_limit: 2g
     command: [ "/usr/local/bin/kibana-docker", "--allow-root" ]
@@ -168,11 +166,9 @@ services:
         gid: ${DGID}
     user: root:reactome
     volumes:
-      - filebeatdata01:/usr/share/filebeat/data
-      - "/var/elk-stack/filebeat_ingest_data/:/usr/share/filebeat/ingest_data/"
-      - "./scripts/start_filebeat:/usr/share/filebeat/start_filebeat"
-      - "./scripts/clear_logs:/etc/cron.daily/clear_logs"
+      - "/var/elk-stack-data/filebeat/fbdata01:/usr/share/filebeat/data"
+      - "/var/elk-stack-data/filebeat/ingest:/usr/share/filebeat/ingest"
       - "./filebeat.yml:/usr/share/filebeat/filebeat.yml"
     environment:
       - LOGSTASH_HOSTS=${DLOGSTASH_HOSTS}
-    command: [ "start_filebeat" ]
+    command: ["filebeat", "--strict.perms=false"]

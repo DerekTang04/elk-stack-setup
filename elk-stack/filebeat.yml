@@ -1,9 +1,12 @@
+filebeat.registry.file_permissions: 0640
+
 filebeat.inputs:
 - type: filestream
   id: default-filestream
   paths:
-    - ingest_data/*extended_log*
-    - ingest_data/reactomews/*.txt
+    - ingest/main/main_extended_log*
+    - ingest/idg/idg_extended_log*
+    - ingest/reactomews/*.txt
   close.reader.on_eof: true
   clean_removed: true
 
