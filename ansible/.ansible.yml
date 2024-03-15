@@ -51,7 +51,7 @@
 
 
 - name: Setup ELK server files
-  hosts: elk.reactome.org
+  hosts: elk.test.reactome.org
   gather_facts: false
   vars:
     filebeat_dir: /var/elk-stack-data/filebeat
@@ -100,7 +100,7 @@
 
 
 - name: Setup ELK server applications
-  hosts: elk.reactome.org
+  hosts: elk.test.reactome.org
   gather_facts: false
   vars:
     elk_root: /opt/elk-stack
@@ -113,11 +113,6 @@
         src: ../elk-stack.tar.gz
         dest: "{{ elk_root }}"
         creates: "{{ elk_root }}/docker-compose.yml"
-
-    - name: Start Certbot
-      ansible.builtin.command:
-        cmd: sudo certbot certonly --standalone -n --agree-tos -m awright@oicr.on.ca --no-eff-email -d elk.reactome.org
-        creates: /etc/letsencrypt/renewal/elk.reactome.org.conf
 
     - name: Setup Kibana certs update cron
       ansible.builtin.cron:

@@ -21,6 +21,8 @@ rm -rf aws*
 yes '' | head -n 2 && echo "install certbot"
 snap install --classic certbot
 ln -s /snap/bin/certbot /usr/bin/certbot
+aws s3 cp s3://reactome/private/elk-server-files/read-only/letsencrypt.tar.gz /etc
+tar -xf /etc/letsencrypt.tar.gz -C /etc && rm /etc/letsencrypt.tar.gz
 
 yes '' | head -n 2 && echo "make reactome group"
 groupadd -g ${REACTOME_GID} reactome
