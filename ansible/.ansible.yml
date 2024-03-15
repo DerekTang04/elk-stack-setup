@@ -1,4 +1,4 @@
-- name: Launch ELK server
+- name: Provision ELK server
   hosts: localhost
   connection: local
   gather_facts: false
@@ -7,13 +7,13 @@
       aws_access_key: "{{ aws_access_key }}"
       aws_secret_key: "{{ aws_secret_key }}"
       region: us-east-1
-  tags: launch
+  tags: provision
   tasks:
     - name: Read user data
       ansible.builtin.set_fact:
         user_data: "{{ lookup('file', './user_data.bash') }}"
 
-    - name: Launch instance
+    - name: Provision instance
       amazon.aws.ec2_instance:
         # cpu_credit_specification: standard
         exact_count: 1
