@@ -33,20 +33,20 @@ services:
       bash -c '
         KEYSTORE=config/certs/keystore;
         
-        if [ ! -d "$KEYSTORE" ]; then
-          mkdir "$KEYSTORE";
+        if [ ! -d "$$KEYSTORE" ]; then
+          mkdir "$$KEYSTORE";
         fi;
 
-        if [ ! -f "$KEYSTORE"/ca.zip ]; then
+        if [ ! -f "$$KEYSTORE"/ca.zip ]; then
           echo "Creating CA";
-          bin/elasticsearch-certutil ca --silent --pem -out "$KEYSTORE"/ca.zip;
-          unzip "$KEYSTORE"/ca.zip -d "$KEYSTORE";
+          bin/elasticsearch-certutil ca --silent --pem -out "$$KEYSTORE"/ca.zip;
+          unzip "$$KEYSTORE"/ca.zip -d "$$KEYSTORE";
         fi;
 
-        if [ ! -f "$KEYSTORE"/certs.zip ]; then
+        if [ ! -f "$$KEYSTORE"/certs.zip ]; then
           echo "Creating certs";
-          bin/elasticsearch-certutil cert --silent --pem -out "$KEYSTORE"/certs.zip --in config/certs/instances.yml --ca-cert "$KEYSTORE"/ca/ca.crt --ca-key "$KEYSTORE"/ca/ca.key;
-          unzip "$KEYSTORE"/certs.zip -d "$KEYSTORE";
+          bin/elasticsearch-certutil cert --silent --pem -out "$$KEYSTORE"/certs.zip --in config/certs/instances.yml --ca-cert "$$KEYSTORE"/ca/ca.crt --ca-key "$$KEYSTORE"/ca/ca.key;
+          unzip "$$KEYSTORE"/certs.zip -d "$$KEYSTORE";
         fi;
 
         until curl http://es01:9200 2>&1 | grep -qi "missing authentication credentials for REST request"; do sleep 5; done;
@@ -139,7 +139,7 @@ services:
       context: ./setup/ls-config
       dockerfile: dockerfile
       args:
-        kib_version: ${DSTACK_VERSION}
+        ls_version: ${DSTACK_VERSION}
         gid: ${DGID}
     user: root:reactome
     volumes:

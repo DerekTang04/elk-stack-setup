@@ -25,7 +25,7 @@ if [[ ! -f "$ELK_ROOT"/setup/ls-config/ips_with_usage_types.csv ]]; then
     echo "[WARN] setup/ls-config/ips_with_usage_types.csv is missing!"
 fi
 
-if [[ ! -f "$ELK_ROOT"/setup/ls-config/usagetype-artifacts/logstash-filter-usage_type-*.gem ]]; then
+if [[ ! -f "$ELK_ROOT"/setup/ls-config/usagetype-artifacts/logstash-filter-usage_type-0.0.1.gem ]]; then
     echo "[WARN] filter_usage_type gem file is missing in setup/ls-config/usagetype-artifacts!"
 fi
 

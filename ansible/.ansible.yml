@@ -11,16 +11,16 @@
   tasks:
     - name: Read user data
       ansible.builtin.set_fact:
-        user_data: "{{ lookup('file', './user_data.sh') }}"
+        user_data: "{{ lookup('file', './user_data.bash') }}"
 
     - name: Launch instance
       amazon.aws.ec2_instance:
-        cpu_credit_specification: standard
+        # cpu_credit_specification: standard
         exact_count: 1
         ebs_optimized: true
         iam_instance_profile: arn:aws:iam::851227637779:instance-profile/ELKServerRole
         image_id: ami-07d9b9ddc6cd8dd30
-        instance_type: t3a.micro
+        instance_type: c6a.2xlarge
         key_name: elk-temp
         name: ELK Ansible
         security_groups: [sg-07a8bd89f114dd362, sg-0811a168f9aae44a0]
@@ -153,4 +153,8 @@
         dest: "{{ elk_root }}/setup/ls-config/"
         creates: "{{ elk_root }}/setup/ls-config/ips_with_usage_types.csv"
 
-    # - name: Launch stack
+    - name: Launch stack
+      ansible.builtin.command:
+        chdir: "{{ elk_scripts }}"
+        cmd: ./launch_stack.bash
+      changed_when: false

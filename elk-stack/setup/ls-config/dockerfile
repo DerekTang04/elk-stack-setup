@@ -4,6 +4,8 @@ ARG ls_version
 
 FROM docker.elastic.co/logstash/logstash:${ls_version}
 
+USER root
+
 ARG gid
 
 RUN groupadd -g ${gid} reactome
