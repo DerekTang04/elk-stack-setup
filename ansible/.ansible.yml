@@ -50,14 +50,13 @@
         var: eip
 
 
-- name: Setup ELK server
+- name: Setup ELK server files
   hosts: elk.reactome.org
   gather_facts: false
   vars:
     filebeat_dir: /var/elk-stack-data/filebeat
     sync_inc_file: s3://reactome/private/elk-server-files/read-write/.syncinclude
-    ip_usage_file: s3://reactome/private/elk-server-files/read-only/ips_with_usagetypes.tar.gz
-  tags: setup
+  tags: setup1
   tasks:
     - name: Wait for EC2 connection
       ansible.builtin.wait_for_connection:
@@ -99,18 +98,53 @@
         - idg
         - reactomews
 
-    # - name: Move ELK files
-    #   ansible.builtin.unarchive:
-    #     src: ../elk-stack.tar.gz
-    #     dest: /opt/elk-stack
-    #     creates: docker-compose.yml
 
-    # - name: Start Certbot
+- name: Setup ELK server applications
+  hosts: elk.reactome.org
+  gather_facts: false
+  vars:
+    elk_root: /opt/elk-stack
+    elk_scripts: "{{ elk_root }}/scripts"
+    ip_usage_file: s3://reactome/private/elk-server-files/read-only/ips_with_usage_types.tar.gz
+  tags: setup2
+  tasks:
+    - name: Move ELK files
+      ansible.builtin.unarchive:
+        src: ../elk-stack.tar.gz
+        dest: "{{ elk_root }}"
+        creates: docker-compose.yml
 
-    # - name: Setup Kibana certs update cron
+    - name: Start Certbot
+      ansible.builtin.command:
+        cmd: sudo certbot certonly --standalone
+        creates: /etc/letsencrypt
 
-    # - name: Setup log clean up cron
+    - name: Setup Kibana certs update cron
+      ansible.builtin.cron:
+        name: "cycle kib certs"
+        minute: 0
+        hour: 1
+        job: "{{ elk_scripts }}/cycle_kib_certs.bash"
 
-    # - name: Setup sync logs cron
+    - name: Setup log clean up cron
+      ansible.builtin.cron:
+        name: "clear old logs"
+        minute: 30
+        hour: 1
+        job: "{{ elk_scripts }}/clear_logs.bash"
+
+    - name: Setup sync logs cron
+      ansible.builtin.cron:
+        name: "pull new logs"
+        minute: 0
+        hour: 2
+        job: "{{ elk_scripts }}/sync_apache_logs.bash"
+
+    - name: Get ip usage type file from S3
+      ansible.builtin.unarchive:
+        src: "{{ ip_usage_file }}"
+        dest: "{{ elk_root }}/setup/ls-config/"
+        remote_src: true
+        creates: "{{ elk_root }}/setup/ls-config/ips_with_usage_types.tar.gz"
 
     # - name: Launch stack
