@@ -2,7 +2,7 @@
 .vscode/
 credentials/secrets
 
-ansible/user_data.sh
+ansible/user_data.bash
 ansible/host_vars/localhost.yml
 
 elk-stack.tar.gz

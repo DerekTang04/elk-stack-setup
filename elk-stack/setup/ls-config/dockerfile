@@ -8,8 +8,8 @@ ARG gid
 
 RUN groupadd -g ${gid} reactome
 
-COPY ./plugins/usagetype-plugin/logstash-filter-usage_type-0.0.1.gem /tmp/logstash-filter-usage_type-0.0.1.gem
+COPY ./usagetype-artifacts/logstash-filter-usage_type-0.0.1.gem /tmp/logstash-filter-usage_type-0.0.1.gem
 
-COPY ./plugins/usagetype-plugin/logstash-filter-usage_type.gemspec /tmp/logstash-filter-usage_type.gemspec
+COPY ./usagetype-artifacts/logstash-filter-usage_type.gemspec /tmp/logstash-filter-usage_type.gemspec
 
 RUN /usr/share/logstash/bin/logstash-plugin install --no-verify --local /tmp/logstash-filter-usage_type-0.0.1.gem

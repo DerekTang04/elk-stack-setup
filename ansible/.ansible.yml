@@ -112,12 +112,12 @@
       ansible.builtin.unarchive:
         src: ../elk-stack.tar.gz
         dest: "{{ elk_root }}"
-        creates: docker-compose.yml
+        creates: "{{ elk_root }}/docker-compose.yml"
 
     - name: Start Certbot
       ansible.builtin.command:
-        cmd: sudo certbot certonly --standalone
-        creates: /etc/letsencrypt
+        cmd: sudo certbot certonly --standalone -n --agree-tos -m awright@oicr.on.ca --no-eff-email -d elk.reactome.org
+        creates: /etc/letsencrypt/renewal/elk.reactome.org.conf
 
     - name: Setup Kibana certs update cron
       ansible.builtin.cron:
@@ -140,11 +140,17 @@
         hour: 2
         job: "{{ elk_scripts }}/sync_apache_logs.bash"
 
-    - name: Get ip usage type file from S3
-      ansible.builtin.unarchive:
-        src: "{{ ip_usage_file }}"
-        dest: "{{ elk_root }}/setup/ls-config/"
-        remote_src: true
+    - name: Get ip usage type tar file from S3
+      ansible.builtin.command:
+        chdir: "{{ elk_root }}/setup/ls-config"
+        cmd: aws s3 cp {{ ip_usage_file }} .
         creates: "{{ elk_root }}/setup/ls-config/ips_with_usage_types.tar.gz"
+
+    - name: Inflate usage type file
+      ansible.builtin.unarchive:
+        remote_src: true
+        src: "{{ elk_root }}/setup/ls-config/ips_with_usage_types.tar.gz"
+        dest: "{{ elk_root }}/setup/ls-config/"
+        creates: "{{ elk_root }}/setup/ls-config/ips_with_usage_types.csv"
 
     # - name: Launch stack
