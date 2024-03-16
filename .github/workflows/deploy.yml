@@ -40,7 +40,7 @@ jobs:
               env:
                 REACTOME_GID: ${{ vars.REACTOME_GID }}
               run: |
-                envsubst < ansible/user_data.template > ansible/user_data.bash
+                envsubst '${REACTOME_GID}' < ansible/user_data.template > ansible/user_data.bash
                 while IFS= read -r SECRET; do export $SECRET; done < credentials/secrets/elk_pass
                 envsubst < elk-stack/.env.template > elk-stack/.env
                 envsubst < elk-stack/reporting/.netrc.template > elk-stack/reporting/.netrc
