@@ -9,6 +9,8 @@ jobs:
         steps:
             - name: Checkout repo
               uses: actions/checkout@v4
+              with:
+                submodules: true
 
             - name: Setup Python with caching
               uses: actions/setup-python@v5
