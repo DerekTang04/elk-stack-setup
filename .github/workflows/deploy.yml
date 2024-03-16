@@ -51,4 +51,4 @@ jobs:
               run: tar -czvf elk-stack.tar.gz -C elk-stack/ .
 
             - name: Run Ansible
-              run: cd ansible && ansible-playbook -i lhost-prod.yml -i remote.yml .ansible.yml
+              run: cd ansible && ansible-playbook -vvv -i lhost-prod.yml -i remote.yml .ansible.yml
