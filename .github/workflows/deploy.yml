@@ -23,9 +23,7 @@ jobs:
 
             - name: Make uncommited directories
               run: |
-                mkdir ansible/host_vars \ 
-                    credentials/secrets \
-                    elk-stack/setup/ls-config/usagetype-artifacts
+                mkdir ansible/host_vars credentials/secrets elk-stack/setup/ls-config/usagetype-artifacts
 
             - name: Make Ansible key file, decrypt files
               env:
