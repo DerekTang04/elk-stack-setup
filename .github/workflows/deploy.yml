@@ -34,6 +34,7 @@ jobs:
                 ansible-vault view --vault-id aws_keys@"$KEY_FILE" credentials/aws_keys.enc > ansible/host_vars/localhost.yml
                 ansible-vault view --vault-id ec2_rsa@"$KEY_FILE" credentials/ec2_rsa.enc > credentials/secrets/ec2_rsa
                 ansible-vault view --vault-id elk_pass@"$KEY_FILE" credentials/elk_pass.enc > credentials/secrets/elk_pass
+                chmod 600 credentials/secrets/ec2_rsa
             
             - name: Fill templates
               env:
@@ -51,4 +52,4 @@ jobs:
               run: tar -czvf elk-stack.tar.gz -C elk-stack/ .
 
             - name: Run Ansible
-              run: cd ansible && ansible-playbook -vvv -i lhost-prod.yml -i remote.yml .ansible.yml
+              run: cd ansible && ansible-playbook -i lhost-prod.yml -i remote.yml .ansible.yml
