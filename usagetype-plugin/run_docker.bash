@@ -8,7 +8,7 @@ set -o errtrace
 SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 
 docker build -t usagetype_env "$SCRIPT_DIR"
-docker run -ti --name build-usagetype usagetype_env
+docker run --name build-usagetype usagetype_env
 
 ARTIFACT_DIR="$SCRIPT_DIR"/../elk-stack/setup/ls-config/usagetype-artifacts
 if [[ ! -d "$ARTIFACT_DIR" ]]; then
