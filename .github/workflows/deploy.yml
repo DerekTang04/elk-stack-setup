@@ -21,7 +21,7 @@ jobs:
             - name: Install dependencies missing from cache
               run: pip install -r requirements-prod.txt
 
-            - name: Make uncommited directories
+            - name: Make gitignored directories
               run: |
                 mkdir ansible/host_vars credentials/secrets elk-stack/setup/ls-config/usagetype-artifacts
 
