@@ -19,7 +19,7 @@ jobs:
                 cache: 'pip'
 
             - name: Install dependencies missing from cache
-              run: ls -lR /opt/hostedtoolcache/Python/3.10.12/x64 # pip install -r requirements-prod.txt
+              run: pip install -r requirements-prod.txt
 
             - name: Make gitignored directories
               run: |
