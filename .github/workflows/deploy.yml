@@ -1,0 +1,54 @@
+name: deploy ELK
+
+on:
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout repo
+              uses: actions/checkout@v4
+
+            - name: Setup Python with caching
+              uses: actions/setup-python@v5
+              with:
+                python-version: '3.10.12'
+                cache: 'pip'
+
+            - name: Install dependencies missing from cache
+              run: pip install -r requirements-prod.txt
+
+            - name: Make uncommited directories
+              run: |
+                mkdir ansible/host_vars \ 
+                    credentials/secrets \
+                    elk-stack/setup/ls-config/usagetype-artifacts
+
+            - name: Make Ansible key file, decrypt files
+              env:
+                AV_KEY: ${{ secrets.ANSIBLE_VAULT_KEY }}
+                KEY_FILE: credentials/secrets/enc.key
+              run: |
+                echo "$AV_KEY" > "$KEY_FILE"
+                ansible-vault view --vault-id aws_keys@"$KEY_FILE" credentials/aws_keys.enc > ansible/host_vars/localhost.yml
+                ansible-vault view --vault-id ec2_rsa@"$KEY_FILE" credentials/ec2_rsa.enc > credentials/secrets/ec2_rsa
+                ansible-vault view --vault-id elk_pass@"$KEY_FILE" credentials/elk_pass.enc > credentials/secrets/elk_pass
+            
+            - name: Fill templates
+              env:
+                REACTOME_GID: ${{ vars.REACTOME_GID }}
+              run: |
+                envsubst < ansible/user_data.template > ansible/user_data.bash
+                while IFS= read -r SECRET; do export $SECRET; done < credentials/secrets/elk_pass
+                envsubst < elk-stack/.env.template > elk-stack/.env
+                envsubst < elk-stack/reporting/.netrc.template > elk-stack/reporting/.netrc
+
+            - name: Build usagetype artifacts
+              run: ./usagetype-plugin/run_docker.bash
+
+            - name: Compress ELK stack
+              run: tar -czvf elk-stack.tar.gz -C elk-stack/ .
+
+            - name: Run Ansible
+              run: cd ansible && ansible-playbook -i inventory.yml .ansible.yml
