@@ -53,10 +53,7 @@
 - name: Setup ELK server files
   hosts: elk.test.reactome.org
   gather_facts: false
-  vars:
-    filebeat_dir: /var/elk-stack-data/filebeat
-    sync_inc_file: s3://reactome/private/elk-server-files/read-write/.syncinclude
-  tags: setup1
+  tags: setup0
   tasks:
     - name: Wait for EC2 connection
       ansible.builtin.wait_for_connection:
@@ -69,6 +66,18 @@
         sleep: 5
         timeout: 600
 
+    - name: Reset SSH connection apply docker group
+      ansible.builtin.meta: reset_connection
+
+
+- name: Setup ELK server data files
+  hosts: elk.test.reactome.org
+  gather_facts: false
+  vars:
+    filebeat_dir: /var/elk-stack-data/filebeat
+    sync_inc_file: s3://reactome/private/elk-server-files/read-write/.syncinclude
+  tags: setup1
+  tasks:
     - name: Create directories
       ansible.builtin.file:
         path: "{{ filebeat_dir }}/{{ item }}"
