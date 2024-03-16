@@ -1,0 +1,4 @@
+ungrouped:
+  hosts:
+    localhost:
+      # auto detect python interpreter to use
