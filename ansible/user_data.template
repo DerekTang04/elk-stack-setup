@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 yes '' | head -n 2 && echo "get update and install tools"
 apt-get update && apt-get install -y ca-certificates curl unzip

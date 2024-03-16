@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # exit on attempt to use undeclared variable
 set -o nounset

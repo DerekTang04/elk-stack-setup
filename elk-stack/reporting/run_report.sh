@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # Runs a report in elasticsearch, processes the result into a CSV, and then sends it to an email address.
 # Arguments:

@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/bash
 
 # This script will call run_report.sh to generate and send (by email) several reports.
 # Reports will span the time period $FROM_DATE to $TO_DATE
