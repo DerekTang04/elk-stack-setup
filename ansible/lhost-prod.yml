@@ -1,0 +1,4 @@
+ungrouped:
+  hosts:
+    localhost:
+      ansible_python_interpreter: /opt/hostedtoolcache/Python/3.10.12/x64/python

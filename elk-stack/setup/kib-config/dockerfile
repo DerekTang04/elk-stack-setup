@@ -1,0 +1,9 @@
+ARG kib_version
+
+FROM docker.elastic.co/kibana/kibana:${kib_version}
+
+USER root
+
+ARG gid
+
+RUN groupadd -g ${gid} reactome

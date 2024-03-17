@@ -1,8 +1,0 @@
-{
-    "index_patterns" : ["$LOGSTASH_INDEX_PAT"],
-    "template": {
-      "settings" : {
-        "number_of_replicas" : 0
-      }
-    }
-}

@@ -1,0 +1,163 @@
+- name: Provision ELK server
+  hosts: localhost
+  connection: local
+  gather_facts: false
+  module_defaults:
+    group/aws:
+      aws_access_key: "{{ aws_access_key }}"
+      aws_secret_key: "{{ aws_secret_key }}"
+      region: us-east-1
+  tags: provision
+  tasks:
+    - name: Read user data
+      ansible.builtin.set_fact:
+        user_data: "{{ lookup('file', './user_data.bash') }}"
+
+    - name: Provision instance
+      amazon.aws.ec2_instance:
+        # cpu_credit_specification: standard
+        exact_count: 1
+        ebs_optimized: true
+        iam_instance_profile: arn:aws:iam::851227637779:instance-profile/ELKServerRole
+        image_id: ami-07d9b9ddc6cd8dd30
+        instance_type: c6a.2xlarge
+        key_name: elk-temp
+        name: ELK (Ansible)
+        security_groups: [sg-07a8bd89f114dd362, sg-0811a168f9aae44a0]
+        user_data: "{{ user_data }}"
+        volumes:
+          - device_name: /dev/sda1
+            ebs:
+              volume_type: gp3
+              volume_size: 1024
+              delete_on_termination: true
+        vpc_subnet_id: subnet-f7685bdf
+      register: ec2
+
+    - name: EC2 response
+      ansible.builtin.debug:
+        var: ec2
+
+    - name: Associate EIP
+      amazon.aws.ec2_eip:
+        allow_reassociation: true
+        device_id: "{{ ec2.instance_ids[0] }}"
+        public_ip: 18.215.40.150
+      register: eip
+
+    - name: EIP response
+      ansible.builtin.debug:
+        var: eip
+
+
+- name: Wait for EC2 ready
+  hosts: elk.test.reactome.org
+  gather_facts: false
+  tags: setup0
+  tasks:
+    - name: Wait for EC2 connection
+      ansible.builtin.wait_for_connection:
+        sleep: 5
+
+    - name: Wait for setup to finish
+      ansible.builtin.wait_for:
+        path: /var/log/cloud-init-output.log
+        search_regex: 'Cloud-init .* finished'
+        sleep: 5
+        timeout: 600
+
+    - name: Reset SSH connection to apply docker group
+      ansible.builtin.meta: reset_connection
+
+
+- name: Setup ELK server data files
+  hosts: elk.test.reactome.org
+  gather_facts: false
+  vars:
+    filebeat_dir: /var/elk-stack-data/filebeat
+    sync_inc_file: s3://reactome/private/elk-server-files/read-write/.syncinclude
+  tags: setup1
+  tasks:
+    - name: Create directories
+      ansible.builtin.file:
+        path: "{{ filebeat_dir }}/{{ item }}"
+        state: directory
+        mode: '2775'
+      loop:
+        - fbdata01
+        - ingest/main
+        - ingest/idg
+        - ingest/reactomews
+        - ingest/tmp
+
+    - name: Get sync include file from S3
+      ansible.builtin.command:
+        chdir: "{{ filebeat_dir }}/ingest"
+        cmd: aws s3 cp {{ sync_inc_file }} .
+        creates: "{{ filebeat_dir }}/ingest/.syncinclude"
+
+    - name: Create sync exclude files
+      ansible.builtin.file:
+        path: "{{ filebeat_dir }}/ingest/{{ item }}/.syncexclude"
+        state: touch
+        mode: '0664'
+      loop:
+        - main
+        - idg
+        - reactomews
+
+
+- name: Setup ELK server applications
+  hosts: elk.test.reactome.org
+  gather_facts: false
+  vars:
+    elk_root: /opt/elk-stack
+    elk_scripts: "{{ elk_root }}/scripts"
+    ip_usage_file: s3://reactome/private/elk-server-files/read-only/ips_with_usage_types.tar.gz
+  tags: setup2
+  tasks:
+    - name: Move ELK files
+      ansible.builtin.unarchive:
+        src: ../elk-stack.tar.gz
+        dest: "{{ elk_root }}"
+        creates: "{{ elk_root }}/docker-compose.yml"
+
+    - name: Setup Kibana certs update cron
+      ansible.builtin.cron:
+        name: "cycle kib certs"
+        minute: 0
+        hour: 1
+        job: "{{ elk_scripts }}/cycle_kib_certs.bash"
+
+    - name: Setup log clean up cron
+      ansible.builtin.cron:
+        name: "clear old logs"
+        minute: 30
+        hour: 1
+        job: "{{ elk_scripts }}/clear_logs.bash"
+
+    - name: Setup sync logs cron
+      ansible.builtin.cron:
+        name: "pull new logs"
+        minute: 0
+        hour: 2
+        job: "{{ elk_scripts }}/sync_apache_logs.bash"
+
+    - name: Get ip usage type tar file from S3
+      ansible.builtin.command:
+        chdir: "{{ elk_root }}/setup/ls-config"
+        cmd: aws s3 cp {{ ip_usage_file }} .
+        creates: "{{ elk_root }}/setup/ls-config/ips_with_usage_types.tar.gz"
+
+    - name: Inflate usage type file
+      ansible.builtin.unarchive:
+        remote_src: true
+        src: "{{ elk_root }}/setup/ls-config/ips_with_usage_types.tar.gz"
+        dest: "{{ elk_root }}/setup/ls-config/"
+        creates: "{{ elk_root }}/setup/ls-config/ips_with_usage_types.csv"
+
+    - name: Launch stack
+      ansible.builtin.command:
+        chdir: "{{ elk_scripts }}"
+        cmd: ./launch_stack.bash
+      changed_when: false

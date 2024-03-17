@@ -1,0 +1,9 @@
+ARG fb_version
+
+FROM docker.elastic.co/beats/filebeat:${fb_version}
+
+USER root
+
+ARG gid
+
+RUN groupadd -g ${gid} reactome

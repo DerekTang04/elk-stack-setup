@@ -1,0 +1,11 @@
+# image to set env necessary to build custom plugins
+# plugins:
+#     usagetype
+
+FROM eclipse-temurin:11-jdk-jammy
+
+COPY . /opt/usagetype-plugin
+
+WORKDIR /opt/usagetype-plugin
+
+ENTRYPOINT [ "./build.bash" ]

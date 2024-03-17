@@ -1,0 +1,14 @@
+server.name: kibana
+server.host: 0.0.0.0
+
+server.ssl.enabled: true
+server.ssl.certificate: /etc/letsencrypt/live/elk.test.reactome.org/fullchain.pem
+server.ssl.key: /etc/letsencrypt/live/elk.test.reactome.org/privkey.pem
+
+elasticsearch.hosts: ${ELASTICSEARCH_HOSTS}
+elasticsearch.username: kibana_system
+elasticsearch.password: ${KIBANA_PASSWORD}
+
+xpack.security.encryptionKey: ${SEC_ENC_KEY}
+xpack.encryptedSavedObjects.encryptionKey: ${SAVED_OBJ_ENC_KEY}
+xpack.reporting.encryptionKey: ${REPORT_ENC_KEY}

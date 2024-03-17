@@ -1,0 +1,6 @@
+.dockerignore
+.gitignore
+dockerfile
+README.md
+run_docker.bash
+sample_usage_type_file.csv

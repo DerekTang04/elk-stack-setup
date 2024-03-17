@@ -1,5 +1,8 @@
-certs/
-filebeat_ingest_data/
+.venv/
+.vscode/
+credentials/secrets
 
-.env
-ips_with_usage_types.csv
+ansible/user_data.bash
+ansible/host_vars/localhost.yml
+
+elk-stack.tar.gz
