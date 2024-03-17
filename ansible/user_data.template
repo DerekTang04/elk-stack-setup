@@ -1,9 +1,9 @@
 #!/bin/bash
 
-yes '' | head -n 2 && echo "get update and install tools"
-apt-get update && apt-get install -y ca-certificates curl unzip
+yes '' | head -n 2 && echo "get updating and installing tools..."
+apt-get update && apt-get install -y ca-certificates curl unzip jq
 
-yes '' | head -n 2 && echo "install docker"
+yes '' | head -n 2 && echo "installing docker..."
 install -m 0755 -d /etc/apt/keyrings
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc
 chmod a+r /etc/apt/keyrings/docker.asc
@@ -12,24 +12,23 @@ echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.
 apt-get update && apt-get install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
 usermod -aG docker ubuntu
 
-yes '' | head -n 2 && echo "install aws cli"
+yes '' | head -n 2 && echo "installing aws cli..."
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip > /dev/null
 ./aws/install
 rm -rf aws*
 
-yes '' | head -n 2 && echo "install certbot"
+yes '' | head -n 2 && echo "installing certbot..."
 snap install --classic certbot
 ln -s /snap/bin/certbot /usr/bin/certbot
 aws s3 cp s3://reactome/private/elk-server-files/read-only/letsencrypt.tar.gz /etc
 tar -xf /etc/letsencrypt.tar.gz -C /etc && rm /etc/letsencrypt.tar.gz
 
-yes '' | head -n 2 && echo "make reactome group"
+yes '' | head -n 2 && echo "making reactome group..."
 groupadd -g ${REACTOME_GID} reactome
 usermod -aG reactome ubuntu
 
-yes '' | head -n 2 && echo "make elk-stack folders"
+yes '' | head -n 2 && echo "making ELK folders..."
 mkdir /var/elk-stack-data /opt/elk-stack
 chown ubuntu:reactome /var/elk-stack-data /opt/elk-stack
 chmod 2775 /var/elk-stack-data /opt/elk-stack
-    
