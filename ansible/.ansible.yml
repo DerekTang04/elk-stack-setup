@@ -15,12 +15,12 @@
 
     - name: Provision instance
       amazon.aws.ec2_instance:
-        # cpu_credit_specification: standard
+        cpu_credit_specification: unlimited
         exact_count: 1
         ebs_optimized: true
         iam_instance_profile: arn:aws:iam::851227637779:instance-profile/ELKServerRole
         image_id: ami-07d9b9ddc6cd8dd30
-        instance_type: c6a.2xlarge
+        instance_type: t3a.2xlarge
         key_name: elk-temp
         name: ELK (Ansible)
         security_groups: [sg-07a8bd89f114dd362, sg-0811a168f9aae44a0]
@@ -29,7 +29,7 @@
           - device_name: /dev/sda1
             ebs:
               volume_type: gp3
-              volume_size: 1024
+              volume_size: 800
               delete_on_termination: true
         vpc_subnet_id: subnet-f7685bdf
       register: ec2
