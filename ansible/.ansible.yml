@@ -22,7 +22,7 @@
         image_id: ami-07d9b9ddc6cd8dd30
         instance_type: t3a.2xlarge
         key_name: elk-temp
-        name: ELK (Ansible)
+        name: ELK (ansible)
         security_groups: [sg-07a8bd89f114dd362, sg-0811a168f9aae44a0]
         user_data: "{{ user_data }}"
         volumes:
@@ -75,7 +75,6 @@
   gather_facts: false
   vars:
     filebeat_dir: /var/elk-stack-data/filebeat
-    sync_inc_file: s3://reactome/private/elk-server-files/read-write/.syncinclude
   tags: setup1
   tasks:
     - name: Create directories
@@ -90,21 +89,16 @@
         - ingest/reactomews
         - ingest/tmp
 
-    - name: Get sync include file from S3
-      ansible.builtin.command:
-        chdir: "{{ filebeat_dir }}/ingest"
-        cmd: aws s3 cp {{ sync_inc_file }} .
-        creates: "{{ filebeat_dir }}/ingest/.syncinclude"
-
-    - name: Create sync exclude files
+    - name: Create sync include and exclude control files
       ansible.builtin.file:
-        path: "{{ filebeat_dir }}/ingest/{{ item }}/.syncexclude"
+        path: "{{ filebeat_dir }}/ingest/{{ item }}"
         state: touch
         mode: '0664'
       loop:
-        - main
-        - idg
-        - reactomews
+        - .syncinclude
+        - main/.syncexclude
+        - idg/.syncexclude
+        - reactomews/.syncexclude
 
 
 - name: Setup ELK server applications
@@ -113,7 +107,7 @@
   vars:
     elk_root: /opt/elk-stack
     elk_scripts: "{{ elk_root }}/scripts"
-    ip_usage_file: s3://reactome/private/elk-server-files/read-only/ips_with_usage_types.tar.gz
+    ip_usage_file: s3://reactome/private/elk-server-files/ips_with_usage_types.tar.gz
   tags: setup2
   tasks:
     - name: Move ELK files
