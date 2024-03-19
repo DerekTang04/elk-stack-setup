@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# exit on error
-set -e
 # exit on attempt to use undeclared variable
 set -o nounset
 # enable error tracing
