@@ -41,6 +41,7 @@ When operating above 40% CPUUtilization, baseline for t3a.2xlarge instance, the 
 1. CPUCreditBalance starts to deplete.
 2. Once CPUCreditBalance depletes, CPUSurplusCreditBalance starts to increase.
 3. Once CPUSurplusCreditBalance reaches a maximum, 4608 for a t3a.2xlarge instance, additional charges start to apply.
+
 See [CPU Credits Definition](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/burstable-credits-baseline-concepts.html#key-concepts) and [EC2 Unlimited Mode Pricing](https://aws.amazon.com/ec2/pricing/on-demand/) for more details.
 
 
