@@ -51,7 +51,7 @@
 
 
 - name: Wait for EC2 ready
-  hosts: elk.test.reactome.org
+  hosts: elk.reactome.org
   gather_facts: false
   tags: setup0
   tasks:
@@ -71,7 +71,7 @@
 
 
 - name: Setup ELK server data files
-  hosts: elk.test.reactome.org
+  hosts: elk.reactome.org
   gather_facts: false
   vars:
     filebeat_dir: /var/elk-stack-data/filebeat
@@ -102,7 +102,7 @@
 
 
 - name: Setup ELK server applications
-  hosts: elk.test.reactome.org
+  hosts: elk.reactome.org
   gather_facts: false
   vars:
     elk_root: /opt/elk-stack
