@@ -17,10 +17,10 @@ MAIL_TO=$3
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-bash "$SCRIPT_DIR"/run_report.sh $FROM_DATE $TO_DATE http_code_counts_by_month_no_bots.query.json HTTP_Codes_no_bots "Month, HTTP Code, Count, HTTP Code, Count, HTTP Code, Count, HTTP Code, Count" '.aggregations.Month.buckets[] | [.key_as_string, (.HTTP_Code_Category.buckets[] | .key, .doc_count)] |@csv' $MAIL_TO
+bash "$SCRIPT_DIR"/run_report.bash $FROM_DATE $TO_DATE http_code_counts_by_month_no_bots.query.json HTTP_Codes_no_bots "Month, HTTP Code, Count, HTTP Code, Count, HTTP Code, Count, HTTP Code, Count" '.aggregations.Month.buckets[] | [.key_as_string, (.HTTP_Code_Category.buckets[] | .key, .doc_count)] |@csv' $MAIL_TO
 
-bash "$SCRIPT_DIR"/run_report.sh $FROM_DATE $TO_DATE http_code_counts_by_month_WITH_bots.query.json HTTP_Codes_With_bots "Month, HTTP Code, Count, HTTP Code, Count, HTTP Code, Count, HTTP Code, Count" '.aggregations.Month.buckets[] | [.key_as_string, (.HTTP_Code_Category.buckets[] | .key, .doc_count)] |@csv' $MAIL_TO
+bash "$SCRIPT_DIR"/run_report.bash $FROM_DATE $TO_DATE http_code_counts_by_month_WITH_bots.query.json HTTP_Codes_With_bots "Month, HTTP Code, Count, HTTP Code, Count, HTTP Code, Count, HTTP Code, Count" '.aggregations.Month.buckets[] | [.key_as_string, (.HTTP_Code_Category.buckets[] | .key, .doc_count)] |@csv' $MAIL_TO
 
-bash "$SCRIPT_DIR"/run_report.sh $FROM_DATE $TO_DATE web_requests.query.json web_requests "Month, Usage Type, Count, Bytes" '.aggregations.month_agg.buckets[] as $x | $x.usage_type_agg.buckets[] | [ $x.key_as_string, .key, .doc_count, .bytes_agg.value ] | @csv' $MAIL_TO
+bash "$SCRIPT_DIR"/run_report.bash $FROM_DATE $TO_DATE web_requests.query.json web_requests "Month, Usage Type, Count, Bytes" '.aggregations.month_agg.buckets[] as $x | $x.usage_type_agg.buckets[] | [ $x.key_as_string, .key, .doc_count, .bytes_agg.value ] | @csv' $MAIL_TO
 
-bash "$SCRIPT_DIR"/run_report.sh $FROM_DATE $TO_DATE unique_hosts.query.json unique_hosts "Month, Usage Type, Unique Client IP Count", '.aggregations.months_agg.buckets[] as $x | $x.usage_type_agg.buckets[] | [ $x.key_as_string , .key, .unique_ip_agg.value] | @csv' $MAIL_TO
+bash "$SCRIPT_DIR"/run_report.bash $FROM_DATE $TO_DATE unique_hosts.query.json unique_hosts "Month, Usage Type, Unique Client IP Count", '.aggregations.months_agg.buckets[] as $x | $x.usage_type_agg.buckets[] | [ $x.key_as_string , .key, .unique_ip_agg.value] | @csv' $MAIL_TO

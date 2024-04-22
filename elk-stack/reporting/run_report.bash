@@ -33,6 +33,7 @@ QUERY=$(sed -e "s/_FROM_DATE/\""$FROM_DATE"\"/g" <  "$SCRIPT_DIR"/query-files/"$
 FILE_NAME=${OUTPUT_FILE_PREFIX}_${FROM_DATE}_to_${TO_DATE}.csv
 
 # write the file header.
+mkdir -p "$SCRIPT_DIR"/reports
 echo "$HEADER" > "$SCRIPT_DIR"/reports/"$FILE_NAME"
 
 # Query elasticsearch. You will need to have jq installed to transform elasticsearch's JSON output into a CSV.
