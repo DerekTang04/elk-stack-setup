@@ -21,7 +21,7 @@
         iam_instance_profile: arn:aws:iam::851227637779:instance-profile/ELKServerRole
         image_id: ami-07d9b9ddc6cd8dd30
         instance_type: t3a.2xlarge
-        key_name: elk-temp
+        key_name: elk
         name: ELK (ansible)
         security_groups: [sg-07a8bd89f114dd362, sg-0811a168f9aae44a0]
         user_data: "{{ user_data }}"
@@ -51,7 +51,7 @@
 
 
 - name: Wait for EC2 ready
-  hosts: elk.test.reactome.org
+  hosts: elk.reactome.org
   gather_facts: false
   tags: setup0
   tasks:
@@ -71,7 +71,7 @@
 
 
 - name: Setup ELK server data files
-  hosts: elk.test.reactome.org
+  hosts: elk.reactome.org
   gather_facts: false
   vars:
     filebeat_dir: /var/elk-stack-data/filebeat
@@ -102,7 +102,7 @@
 
 
 - name: Setup ELK server applications
-  hosts: elk.test.reactome.org
+  hosts: elk.reactome.org
   gather_facts: false
   vars:
     elk_root: /opt/elk-stack

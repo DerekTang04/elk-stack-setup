@@ -2,8 +2,8 @@ server.name: kibana
 server.host: 0.0.0.0
 
 server.ssl.enabled: true
-server.ssl.certificate: /etc/letsencrypt/live/elk.test.reactome.org/fullchain.pem
-server.ssl.key: /etc/letsencrypt/live/elk.test.reactome.org/privkey.pem
+server.ssl.certificate: /etc/letsencrypt/live/elk.reactome.org/fullchain.pem
+server.ssl.key: /etc/letsencrypt/live/elk.reactome.org/privkey.pem
 
 elasticsearch.hosts: ${ELASTICSEARCH_HOSTS}
 elasticsearch.username: kibana_system
